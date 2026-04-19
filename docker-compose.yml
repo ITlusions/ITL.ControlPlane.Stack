@@ -431,7 +431,7 @@ services:
     profiles:
       - siem
     build:
-      context: D:\repos\ITL.ControlPanel.SDK
+      context: D:\repos\ITL.ControlPlane.SDK
       dockerfile: Dockerfile.audit-consumer
     container_name: itl-audit-consumer
     environment:

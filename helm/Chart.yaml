@@ -10,9 +10,9 @@ keywords:
   - resource-management
   - iam
   - keycloak
-home: https://github.com/ITlusions/ITL.ControlPanel.Stack
+home: https://github.com/ITlusions/ITL.ControlPlane.Stack
 sources:
-  - https://github.com/ITlusions/ITL.ControlPanel.Stack
+  - https://github.com/ITlusions/ITL.ControlPlane.Stack
 maintainers:
   - name: ITL Platform Team
     email: platform@itlusions.com

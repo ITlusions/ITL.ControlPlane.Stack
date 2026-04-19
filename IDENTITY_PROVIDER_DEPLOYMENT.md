@@ -9,7 +9,7 @@ The Identity Provider is now integrated into the ITL ControlPlane stack, providi
 ### Start the Full Stack
 
 ```powershell
-cd D:\repos\ITL.ControlPanel.Stack
+cd D:\repos\ITL.ControlPlane.Stack
 docker compose up -d
 ```
 
@@ -386,8 +386,8 @@ pytest tests/ -v
 ## Resources
 
 - [Identity Provider README](../ITL.ControlPlane.ResourceProvider.Identity/README.md)
-- [SDK Enhancement Summary](../ITL.ControlPanel.SDK/SDK_ENHANCEMENT_SUMMARY.md)
-- [SDK Quick Reference](../ITL.ControlPanel.SDK/SDK_QUICK_REFERENCE.md)
+- [SDK Enhancement Summary](../ITL.ControlPlane.SDK/SDK_ENHANCEMENT_SUMMARY.md)
+- [SDK Quick Reference](../ITL.ControlPlane.SDK/SDK_QUICK_REFERENCE.md)
 - [Keycloak Admin API](https://www.keycloak.org/docs-api/latest/rest-api/)
 
 ---

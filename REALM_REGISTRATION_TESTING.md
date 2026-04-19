@@ -5,7 +5,7 @@
 ### 1. Start the Full Stack
 
 ```bash
-cd d:\repos\ITL.ControlPanel.Stack
+cd d:\repos\ITL.ControlPlane.Stack
 docker-compose up -d
 ```
 
@@ -25,7 +25,7 @@ Expected healthy services:
 ### 2. Create a Test Realm in Keycloak
 
 ```powershell
-cd d:\repos\ITL.ControlPanel.Stack
+cd d:\repos\ITL.ControlPlane.Stack
 .\scripts\setup-keycloak-realm.ps1 -RealmName "test-realm"
 ```
 
@@ -77,7 +77,7 @@ Expected output:
 **Required**:
 - Docker Desktop (running)
 - PowerShell 5.1 or higher
-- Workspace: `d:\repos\ITL.ControlPanel.Stack`
+- Workspace: `d:\repos\ITL.ControlPlane.Stack`
 
 **Services**:
 - Keycloak: http://localhost:8080
@@ -90,7 +90,7 @@ Expected output:
 #### Step 1: Verify All Services Running
 
 ```powershell
-cd d:\repos\ITL.ControlPanel.Stack
+cd d:\repos\ITL.ControlPlane.Stack
 
 # Check status
 docker-compose ps
@@ -405,6 +405,6 @@ If issues persist:
    ```
 
 4. **Check the ITL documentation**:
-   - SDK: [ITL.ControlPanel.SDK/README.md](../../ITL.ControlPanel.SDK/README.md)
+   - SDK: [ITL.ControlPlane.SDK/README.md](../../ITL.ControlPlane.SDK/README.md)
    - IAM Provider: [ITL.ControlPlane.ResourceProvider.Identity/README.md](../../ITL.ControlPlane.ResourceProvider.Identity/README.md)
 
