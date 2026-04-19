@@ -1,0 +1,21 @@
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# Keep the example template
+!.env.example
+
+# Docker volumes
+pgdata/
+neo4jdata/
+keycloak_data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

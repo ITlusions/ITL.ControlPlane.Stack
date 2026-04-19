@@ -1,0 +1,3 @@
+# Keycloak secrets - do not commit
+.env
+!.env.example

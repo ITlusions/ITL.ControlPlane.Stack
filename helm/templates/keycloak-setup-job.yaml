@@ -1,0 +1,89 @@
+{{- if .Values.keycloakSetup.enabled -}}
+# Post-install job: creates ITL realm, client, and initial admin user in Keycloak
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "itl-controlplane.fullname" . }}-keycloak-setup
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "itl-controlplane.labels" . | nindent 4 }}
+    app.kubernetes.io/component: keycloak-setup
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "5"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        {{- include "itl-controlplane.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: keycloak-setup
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: keycloak-setup
+          image: curlimages/curl:8.7.1
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop: [ALL]
+          env:
+            - name: KEYCLOAK_URL
+              value: {{ include "itl-controlplane.keycloakUrl" . }}
+            - name: KEYCLOAK_ADMIN
+              value: admin
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: itl-controlplane-secrets
+                  key: KEYCLOAK_ADMIN_PASSWORD
+            - name: REALM_NAME
+              value: {{ .Values.keycloakSetup.realmName | quote }}
+            - name: CLIENT_ID
+              value: {{ .Values.keycloakSetup.clientId | quote }}
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: itl-controlplane-secrets
+                  key: KEYCLOAK_CLIENT_SECRET
+            - name: ADMIN_EMAIL
+              value: {{ .Values.partner.adminEmail | quote }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+
+              echo "Waiting for Keycloak to be ready..."
+              until curl -sf "${KEYCLOAK_URL}/health/ready"; do sleep 5; done
+
+              echo "Obtaining admin token..."
+              TOKEN=$(curl -sf \
+                "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
+                -d "client_id=admin-cli" \
+                -d "username=${KEYCLOAK_ADMIN}" \
+                -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+                -d "grant_type=password" | \
+                grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+
+              echo "Creating realm ${REALM_NAME}..."
+              curl -sf -X POST \
+                "${KEYCLOAK_URL}/admin/realms" \
+                -H "Authorization: Bearer ${TOKEN}" \
+                -H "Content-Type: application/json" \
+                -d "{\"realm\":\"${REALM_NAME}\",\"enabled\":true,\"displayName\":\"ITL Platform\"}" || \
+                echo "Realm already exists — skipping"
+
+              echo "Creating service client ${CLIENT_ID}..."
+              curl -sf -X POST \
+                "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/clients" \
+                -H "Authorization: Bearer ${TOKEN}" \
+                -H "Content-Type: application/json" \
+                -d "{\"clientId\":\"${CLIENT_ID}\",\"secret\":\"${CLIENT_SECRET}\",\"serviceAccountsEnabled\":true,\"directAccessGrantsEnabled\":true}" || \
+                echo "Client already exists — skipping"
+
+              echo "Keycloak setup complete."
+{{- end }}
